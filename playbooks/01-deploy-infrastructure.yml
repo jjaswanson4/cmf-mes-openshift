@@ -1,0 +1,26 @@
+- name: Verify that infrastructure exists
+  ansible.builtin.command: "cmf-portal createinfrastructure --name {{ cmf.infrastructure.name }} --customer {{ cmf.customer }} --ignore-if-exists"
+
+- name: Populate the agent templates
+  ansible.builtin.template:
+    src: ../templates/agent.json.j2
+    dest: "{{ workingDir/templates/agent.json }}"
+
+- name: Deploy infrastructure Agent
+  ansible.builtin.command: "cmf-portal deployagent --name {{ cmf.agent.name }} \
+   --target {{ cmf.agent.target }} \
+   --output {{ workingDir +'/agent' }} \
+   --deploymentTimeoutMinutes {{ cmf.agent.deploymentTimeout}} \
+   --description {{ cmf.agent.description }} \
+   --parameters {{ workingDir/templates/agent.json }}
+   --type {{ cmf.agent.type }}
+   -ci {{ cmf.infrastructure.name }}" 
+
+    # cmf-portal deployagent 
+    # --name 'cmf-infra-agent' 
+    # --output /home/ansible/MES-install/agent 
+    # --deploymentTimeoutMinutes 360 
+    # -trg OpenShiftOnPremisesTarget 
+    # --type Development 
+    # --parameters /home/ansible/ocp_appliance/appliance_assets/MES/Templates/agent.json 
+    # -ci 'Home SNO

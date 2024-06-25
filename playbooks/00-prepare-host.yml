@@ -1,0 +1,10 @@
+#setup the host machine to be able to install NPM packages and install the cmf-portal npm package
+- name: Verify npm is available
+  ansible.builtin.package:
+    name: npm
+    state: present
+
+- name: Install CMF-Portal using npm.
+  community.general.npm:
+    name: '@criticalmanufacturing/portal'
+    global: true

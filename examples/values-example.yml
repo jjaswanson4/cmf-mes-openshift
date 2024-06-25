@@ -1,0 +1,33 @@
+workingDir: /home/{{ ansible_user }}/MES-Install
+openshift:
+  cluster-domain: dell.hvanniek.ie
+cmf:
+  customer: "Red Hat"
+  infrastructure:
+    name: cmf-auto-infrastructure
+  agent:
+    name: cmf-auto-agent
+    infrastructure: "{{ cmf.infrastructure.name }}" #name of existing customer infrastructure
+    description: "Infrastructure agent for {{ cmf.infrastructure.name }} "
+    type: Development #Development|Production|Staging|Testing
+    target: "OpenshiftOnPremisesTarget" #OpenShiftOnPremisesTarget|OpenShiftRemoteTarget
+    deploymentTimeout: 360 #Deployment timeout minutes
+    terminateOtherVersions: 
+      value: false
+      remove: true #Remove the deployments from cluster as well
+      removeVolumes: false #Remove data volumes of other versions
+  environment:
+    name: cmf-auto-environment
+    infrastructure: "{{ cmf.infrastructure.name }}" #name of existing customer infrastructure
+    description: "An automated deployment of {{ cmf.environment.name }} on {{ cmf.infrastructure.name }}
+    type: Development #Development|Production|Staging|Testing 
+    target: "OpenShiftRemoteTarget" #OpenShiftOnPremisesTarget|OpenShiftRemoteTarget
+    deploymentTimeout: 360 #Deployment timeout minutes
+    terminateOtherVersions: 
+      value: false
+      remove: true #Remove the deployments from cluster as well
+      removeVolumes: false #Remove data volumes of other versions
+    #these parameters are specific to the environment and to be provided as on portal.criticalmanufacturing.com
+    site: "Red Hat"
+    package: "MES 10.2.5"
+    license: Red Hat_Development_v10.0.0_ED20250410
