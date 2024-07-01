@@ -22,7 +22,7 @@
         dest: "{{ workingDir }}/environments/{{ cmf.environment.name }}/environment.json"
 
 
-    - name: Create infrastructure Agent Deployment
+    - name: Create environment Deployment
       ansible.builtin.command: |
           cmf-portal deploy --name='{{ cmf.environment.name }}' \
           -trg={{ cmf.environment.target }} \
@@ -34,8 +34,27 @@
           --site='{{ cmf.environment.site }}'
           --output='{{ workingDir }}/environments/{{ cmf.environment.name }}/' \
           -pck='{{ cmf.environment.package }}' \
-          -ci='{{ cmf.infrastructure.name }}'
-      when: cmf.environment.target == "OpenShiftRemoteTarget"
+          -ci='{{ cmf_infrastructure }}'
+      when: not cmf.environment.terminateOtherVersions.value
+
+    - name: Create environmet Deployment and terminate any existing deployments
+      ansible.builtin.command: |
+          cmf-portal deploy --name='{{ cmf.environment.name }}' \
+          -trg={{ cmf.environment.target }} \
+          --deploymentTimeoutMinutes={{ cmf.environment.deploymentTimeout}} \
+          --description='{{ cmf.environment.description }}' \
+          --parameters='{{ workingDir }}/environments/{{ cmf.environment.name }}/environment.json' \
+          --type='{{ cmf.environment.type }}' \
+          --license='{{ cmf.environment.license }}'
+          --site='{{ cmf.environment.site }}'
+          --output='{{ workingDir }}/environments/{{ cmf.environment.name }}/' \
+          -pck='{{ cmf.environment.package }}' \
+          -ci='{{ cmf_infrastructure }}' \
+          -tov='{{ cmf.environment.terminateOtherVersions.value }}' \
+          -tovr='{{ cmf.environment.terminateOtherVersions.remove }}' \
+          -tovrv='{{ cmf.environment.terminateOtherVersions.removeVolumes }}'
+      when: cmf.environment.terminateOtherVersions.value
+
 
 
 
