@@ -1,14 +1,18 @@
+---
 workingDir: /home/{{ ansible_user }}/MES-Install
 openshift:
-  cluster-domain: dell.hvanniek.ie
+  cluster-domain: <cluster_name>.<base_domain>
+  storageClasses: # The storageClasses available on Openshift 
+    rwx: ocs-storagecluster-cephfs
+    rwo: lvms-vg1 # RWX value will work for these as well
+
+cmf_infrastructure: cmf-ansible-infrastructure  #Change according to the infrastructure to define on the DevOpsPortal from CMF
 cmf:
-  customer: "Red Hat"
-  infrastructure:
-    name: cmf-auto-infrastructure
+  customer: "The-customer-linked-to-the-cmf-license"
   agent:
     name: cmf-auto-agent
-    infrastructure: "{{ cmf.infrastructure.name }}" #name of existing customer infrastructure
-    description: "Infrastructure agent for {{ cmf.infrastructure.name }} "
+    infrastructure: "{{ cmf_infrastructure }}" #name of existing customer infrastructure
+    description: "Infrastructure agent for {{ cmf_infrastructure }} "
     type: Development #Development|Production|Staging|Testing
     target: "OpenshiftOnPremisesTarget" #OpenShiftOnPremisesTarget|OpenShiftRemoteTarget
     deploymentTimeout: 360 #Deployment timeout minutes
@@ -18,8 +22,8 @@ cmf:
       removeVolumes: false #Remove data volumes of other versions
   environment:
     name: cmf-auto-environment
-    infrastructure: "{{ cmf.infrastructure.name }}" #name of existing customer infrastructure
-    description: "An automated deployment of {{ cmf.environment.name }} on {{ cmf.infrastructure.name }}
+    infrastructure: "{{ cmf_infrastructure }}" #name of existing customer infrastructure
+    description: "An automated deployment  on {{ cmf_infrastructure }}"
     type: Development #Development|Production|Staging|Testing 
     target: "OpenShiftRemoteTarget" #OpenShiftOnPremisesTarget|OpenShiftRemoteTarget
     deploymentTimeout: 360 #Deployment timeout minutes
@@ -28,6 +32,6 @@ cmf:
       remove: true #Remove the deployments from cluster as well
       removeVolumes: false #Remove data volumes of other versions
     #these parameters are specific to the environment and to be provided as on portal.criticalmanufacturing.com
-    site: "Red Hat"
-    package: "MES 10.2.5"
-    license: Red Hat_Development_v10.0.0_ED20250410
+    site: "Red Hat" #Site licensed by CMF
+    package: "@criticalmanufacturing\mes:10.2.5" # The version for MES to install, Other packages not yet checked with this repo
+    license: "Some-Company-Name_v10.0.0_ED00000000" #License name provided by CMF

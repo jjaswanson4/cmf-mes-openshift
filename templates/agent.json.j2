@@ -1,7 +1,7 @@
 {
     "PROXYHTTPSERVER_AUTHENTICATION_USER": "proxy_user",
     "PROXYHTTPSERVER_AUTHENTICATION_PASSWORD": {
-      "Value": "{{ cmf.admin-password }}",
+      "Value": "{{ admin_password }}",
       "IsEncrypted": false
     },
     "EXTERNAL_PROXY_ENABLED": "false",
@@ -11,10 +11,10 @@
     "EXTERNAL_PROXY_USERNAME": "",
     "EXTERNAL_PROXY_PASSWORD": "",
    
-    "APPLICATION_PUBLIC_HTTP_ADDRESS": "cmf-agent.apps.{{ openshift.cluster-domain }}",
+    "APPLICATION_PUBLIC_HTTP_ADDRESS": "cmf-agent.apps.{{ openshift.cluster_domain }}",
     "APPLICATION_ADMIN_USERNAME": "admin",
     "APPLICATION_ADMIN_PASSWORD": {
-      "Value": "{{ cmf.admin-password }}",
+      "Value": "{{ admin_password }}",
       "IsEncrypted": false
     },
     "Kubernetes_grafana_Replicas": "1",

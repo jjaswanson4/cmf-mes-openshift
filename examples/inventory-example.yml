@@ -6,3 +6,4 @@ all:
           ansible_host: 192.168.122.2
           ansible_user: ansible
         # ansible_password: xxxxx #or add passwordless sudo rights to the ansible user https://developers.redhat.com/blog/2018/08/15/how-to-enable-sudo-on-rhel
+        # Remember to use ssh-copy-id to make sure your host can log into the helper

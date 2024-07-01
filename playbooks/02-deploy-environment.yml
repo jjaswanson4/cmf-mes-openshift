@@ -1,0 +1,120 @@
+---
+- name: "Configure and deploy CMF Environment"
+  hosts: helper
+  become: false
+  gather_facts: true
+  vars_files:
+    - ../values.yml
+    - ../secrets.yml
+  tasks:
+
+    - name: Create a working directory if it does not exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - "{{ workingDir }}/environments/{{ cmf.environment.name }}"
+
+    - name: Populate the environment templates
+      ansible.builtin.template:
+        src: ../templates/environment.json.j2
+        dest: "{{ workingDir }}/environments/{{ cmf.environment.name }}/environment.json"
+
+
+    - name: Create infrastructure Agent Deployment
+      ansible.builtin.command: |
+          cmf-portal deploy --name='{{ cmf.environment.name }}' \
+          -trg={{ cmf.environment.target }} \
+          --deploymentTimeoutMinutes={{ cmf.environment.deploymentTimeout}} \
+          --description='{{ cmf.environment.description }}' \
+          --parameters='{{ workingDir }}/environments/{{ cmf.environment.name }}/environment.json' \
+          --type='{{ cmf.environment.type }}' \
+          --license='{{ cmf.environment.license }}'
+          --site='{{ cmf.environment.site }}'
+          --output='{{ workingDir }}/environments/{{ cmf.environment.name }}/' \
+          -pck='{{ cmf.environment.package }}' \
+          -ci='{{ cmf.infrastructure.name }}'
+      when: cmf.environment.target == "OpenShiftRemoteTarget"
+
+
+
+############# Openshift manual deployment
+
+    # - name: Remove existing agent directory
+    #   ansible.builtin.file:   
+    #     path: "{{ _outputDir.path }}/agent"
+    #     state: absent
+
+    # - name: Create a working directory if it does not exist
+    #   ansible.builtin.file:
+    #     path: "{{ item }}"
+    #     state: directory
+    #     mode: '0755'
+    #   loop:
+    #     - "{{ workingDir }}/agent"
+    #     - "{{ workingDir }}/templates"
+
+    # - name: Populate the environment templates
+    #   ansible.builtin.template:
+    #     src: ../templates/agent.json.j2
+    #     dest: "{{ workingDir }}/templates/agent.json"
+
+    # - name: Create infrastructure Agent Deployment
+    #   ansible.builtin.command: |
+    #       cmf-portal deployagent --name='{{ cmf.agent.name }}' \
+    #       -trg={{ cmf.agent.target }} \
+    #       --output='{{ workingDir }}/agent' \
+    #       --deploymentTimeoutMinutes={{ cmf.agent.deploymentTimeout}} \
+    #       --description='{{ cmf.agent.description }}' \
+    #       --parameters='{{ workingDir }}/templates/agent.json' \
+    #       --type='{{ cmf.agent.type }}' \
+    #       -ci='{{ cmf.infrastructure.name }}'
+
+#     - name: Reaname and change permissions of deployment file
+#       ansible.builtin.file:
+#         src: "{{ workingDir }}/agent/deployStackToKubernetes.ps1"
+#         dest: "{{ workingDir }}/agent/deployStackToKubernetes.sh"
+#         force: true
+#         mode: a+x
+#         state: hard
+
+# # Read the traefik version from workingDir/agent/traefik-deployment.yaml
+#     - name: Get content the traefik deployment
+#       ansible.builtin.slurp:
+#         src: "{{ workingDir }}/agent/traefik-deployment.yaml"
+#       register: _traefik_file
+
+#     - name: Parse the traefik deployment yaml to a variable
+#       ansible.builtin.set_fact:
+#         _agent_traefik: "{{ _traefik_file.content | b64decode | from_yaml }}"
+
+#     - name: Deploy the required Traefik custom resources
+#       kubernetes.core.k8s:
+#         api_key: "{{ openshift_login_token }}"
+#         host: "https://api.{{ openshift.cluster_domain }}:6443"
+#         state: present
+#         src: "https://raw.githubusercontent.com/traefik/traefik/\
+#           {{ _agent_traefik.spec.template.spec.containers[0].image.split(':').1 }}\
+#           /docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml"
+
+# # Parse and apply the deployment file
+#     - name: Get content the agent deployment file
+#       ansible.builtin.slurp:
+#         src: "{{ workingDir }}/agent/deployStackToKubernetes.ps1"
+#       register: _agent_deploy_file
+
+#     - name: Determine the he agent
+#       ansible.builtin.set_fact:
+#         _agent_deploy: "{{ _agent_deploy_file.content | b64decode }}"
+
+#     - name: Loop through the components and deploy to Openshift
+#       kubernetes.core.k8s:
+#         api_key: "{{ openshift_login_token }}"
+#         host: "https://api.{{ openshift.cluster_domain }}:6443"
+#         apply: true
+#         server_side_apply:
+#           field_manager: "{{ item.split('--field-manager=').1.split(' ').0 }}"
+#           force_conflicts: true
+#         src: "{{ workingDir + '/agent/' +  item.split('-f ').1 }}"
+#       loop: "{{ _agent_deploy.splitlines() }}"
