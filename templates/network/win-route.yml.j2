@@ -1,0 +1,13 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: {{ cmf_db_server_name }}
+  namespace: {{ cmf.environment.name }}
+spec:
+  to:
+    kind: Service
+    name: {{ cmf_db_server_name }}
+    weight: 100
+  port:
+    targetPort: 80
+  wildcardPolicy: None

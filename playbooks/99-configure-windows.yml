@@ -1,0 +1,55 @@
+---
+- name: "Install and configure database for CMF on Windows"
+  hosts: windows
+  become: false
+  gather_facts: true
+  vars_files:
+    - ../values.yml
+    - ../secrets.yml
+  tasks:
+    - name: Download the 7-Zip package
+      win_get_url:
+        url: https://www.7-zip.org/a/7z1701-x64.msi
+        dest: C:\temp\7z.msi
+
+    - name: Ensure 7-Zip is installed through win_package
+      win_package:
+        path: C:\temp\7z.msi
+        state: present
+
+    - name: create user account for db on windows
+      # Content suggestion provided by Ansible Lightspeed
+      ansible.windows.win_user:
+        name: "{{ db_username }}"
+        password: "{{ db_password }}"
+        groups:
+          - Users
+        state: present
+
+
+    # - name: Install SQL server on windows
+    #   # Content suggestion provided by Ansible Lightspeed
+    #   ansible.windows.win_package:
+    #     path: "https://download.microsoft.com/download/4/1/b/41b9a8c3-c2b4-4fcc-a3d5-62feed9e6885/SQL2022-SSEI-Eval.exe?culture=en-us&country=us"
+    #     # product_id: "{{ _product_id_ }}"
+    #     arguments: |
+    #       "/Q 
+    #       /IACCEPTSQLSERVERLICENSETERMS 
+    #       /ACTION='install'
+    #       /PID="AAAAA-BBBBB-CCCCC-DDDDD-EEEEE" 
+    #       /FEATURES=SQL,AS,IS
+    #       /INSTANCENAME=MSSQLSERVER 
+    #       /SQLSVCACCOUNT="MyDomain\MyAccount"
+    #       /SQLSVCPASSWORD="************" 
+    #       /SQLSYSADMINACCOUNTS="MyDomain\MyAccount "
+    #       /AGTSVCACCOUNT="MyDomain\MyAccount" 
+    #       /AGTSVCPASSWORD="************"
+    #       /ASSVCACCOUNT="MyDomain\MyAccount" 
+    #       /ASSVCPASSWORD="************"
+    #       /ISSVCACCOUNT="MyDomain\MyAccount" 
+    #       /ISSVCPASSWORD="************"
+    #       /ASSYSADMINACCOUNTS="MyDomain\MyAccount"
+
+    #   register: sql_server_install_result
+    #   failed_when: sql_server_install_result.rc != 0
+    #   changed_when: sql_server_install_result.rc == 0

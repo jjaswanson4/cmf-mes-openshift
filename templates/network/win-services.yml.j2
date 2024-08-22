@@ -1,0 +1,26 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ cmf_db_server_name }}
+  namespace: {{ cmf.environment.name }}
+spec:
+  ports:
+    - name: ssrs-http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: mssql
+      protocol: TCP
+      port: 1433
+      targetPort: 1433
+    - name: ssrs-https
+      protocol: TCP
+      port: 443
+      targetPort: 443
+    - name: ssas
+      protocol: TCP
+      port: 2383
+      targetPort: 2383
+  type: ClusterIP
+  selector:
+    kubevirt.io/domain: {{ cmf_db_server_name }}

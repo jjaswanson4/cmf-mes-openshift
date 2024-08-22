@@ -1,3 +1,5 @@
+# What is 
+
 The purpose of this repository is to provide a base for automated installation of the Critical Manufacturing MES on Openshift using Ansible and their shell SDK.
 
 References:
@@ -84,7 +86,23 @@ Fill out the agent section in the values.yml file if you have not already done s
 ansible-playbook -vvvi inventory.yml playbooks/01-deploy-infrastructure.yml --ask-vault-pass
 ```
 
-## TODO - create SQL servers on Openshift Virt
+## create SQL servers on Openshift Virt
+In order to create the windows VM on Openshift Virt, the following playbook is available.
+
+```
+ansible-playbook -vvvi inventory.yml playbooks/02-deploy-environment.yml --ask-vault-pass
+```
+
+This will deploy a single windows server vm to Openshift virt.
+
+TODO: configure the database services.
+
+log into windows server and run in powershell
+```
+Set-Item -Path WSMan:\localhost\Service\Auth\Basic -Value $true
+```
+
+
 
 ## Deploy each environment
 

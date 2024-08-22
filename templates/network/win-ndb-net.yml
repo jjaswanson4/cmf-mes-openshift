@@ -1,0 +1,31 @@
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  annotations:
+    description: localnet1 network is mapped to the br-ex bridge (OVN)
+  name: localnet1-nncp
+spec:
+  desiredState:
+    ovn:
+      bridge-mappings:
+        - bridge: br-ex
+          localnet: localnet1
+          state: present
+  nodeSelector:
+    node-role.kubernetes.io/worker: ''
+
+---
+
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: localnet1-network
+spec:
+  config: |
+    {
+            "cniVersion": "0.3.1", 
+            "name": "localnet1", 
+            "type": "ovn-k8s-cni-overlay", 
+            "topology": "localnet", 
+            "netAttachDefName": "vmexamples/localnet1-network" 
+    }
