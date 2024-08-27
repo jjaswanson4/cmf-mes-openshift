@@ -25,13 +25,13 @@
     - name: Create environment Deployment
       ansible.builtin.command: |
           cmf-portal deploy --name='{{ cmf.environment.name }}' \
-          -trg={{ cmf.environment.target }} \
+          -trg='{{ cmf.environment.target }}' \
           --deploymentTimeoutMinutes={{ cmf.environment.deploymentTimeout}} \
           --description='{{ cmf.environment.description }}' \
           --parameters='{{ workingDir }}/environments/{{ cmf.environment.name }}/environment.json' \
           --type='{{ cmf.environment.type }}' \
-          --license='{{ cmf.environment.license }}'
-          --site='{{ cmf.environment.site }}'
+          --license='{{ cmf.environment.license }}' \
+          --site='{{ cmf.environment.site }}' \
           --output='{{ workingDir }}/environments/{{ cmf.environment.name }}/' \
           -pck='{{ cmf.environment.package }}' \
           -ci='{{ cmf_infrastructure }}'
@@ -45,8 +45,8 @@
           --description='{{ cmf.environment.description }}' \
           --parameters='{{ workingDir }}/environments/{{ cmf.environment.name }}/environment.json' \
           --type='{{ cmf.environment.type }}' \
-          --license='{{ cmf.environment.license }}'
-          --site='{{ cmf.environment.site }}'
+          --license='{{ cmf.environment.license }}' \
+          --site='{{ cmf.environment.site }}' \
           --output='{{ workingDir }}/environments/{{ cmf.environment.name }}/' \
           -pck='{{ cmf.environment.package }}' \
           -ci='{{ cmf_infrastructure }}' \

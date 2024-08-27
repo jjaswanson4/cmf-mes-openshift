@@ -1,12 +1,13 @@
 ---
 workingDir: /home/{{ ansible_user }}/MES-Install
 openshift:
-  cluster-domain: <cluster_name>.<base_domain>
+  cluster_domain: <cluster_name>.<base_domain>
   storageClasses: # The storageClasses available on Openshift 
     rwx: ocs-storagecluster-cephfs
     rwo: lvms-vg1 # RWX value will work for these as well
 
 cmf_infrastructure: cmf-ansible-infrastructure  #Change according to the infrastructure to define on the DevOpsPortal from CMF
+cmf_db_server_name: "cmf-db-win2k19"
 cmf:
   customer: "The-customer-linked-to-the-cmf-license"
   agent:
@@ -14,7 +15,7 @@ cmf:
     infrastructure: "{{ cmf_infrastructure }}" #name of existing customer infrastructure
     description: "Infrastructure agent for {{ cmf_infrastructure }} "
     type: Development #Development|Production|Staging|Testing
-    target: "OpenshiftOnPremisesTarget" #OpenShiftOnPremisesTarget|OpenShiftRemoteTarget
+    target: "OpenShiftOnPremisesTarget" #OpenShiftOnPremisesTarget|OpenShiftRemoteTarget
     deploymentTimeout: 360 #Deployment timeout minutes
     terminateOtherVersions: 
       value: false

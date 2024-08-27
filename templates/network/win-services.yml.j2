@@ -3,6 +3,7 @@ apiVersion: v1
 metadata:
   name: {{ cmf_db_server_name }}
   namespace: {{ cmf.environment.name }}
+
 spec:
   ports:
     - name: ssrs-http
@@ -21,6 +22,10 @@ spec:
       protocol: TCP
       port: 2383
       targetPort: 2383
+    - name: winrm
+      protocol: TCP
+      port: 5985
+      targetPort: 5980
   type: ClusterIP
   selector:
-    kubevirt.io/domain: {{ cmf_db_server_name }}
+     app.kubernetes.io/name: "{{ cmf_db_server_name }}"

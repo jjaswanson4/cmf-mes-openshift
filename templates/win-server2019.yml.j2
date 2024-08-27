@@ -47,6 +47,7 @@ spec:
       labels:
         kubevirt.io/domain: 'windows'
         kubevirt.io/size: 'medium'
+        app.kubernetes.io/name: "{{ cmf_db_server_name }}"
     spec:
       architecture: 'amd64'
       domain:

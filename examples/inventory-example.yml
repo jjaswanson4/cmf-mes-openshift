@@ -7,3 +7,11 @@ all:
           ansible_user: ansible
         # ansible_password: xxxxx #or add passwordless sudo rights to the ansible user https://developers.redhat.com/blog/2018/08/15/how-to-enable-sudo-on-rhel
         # Remember to use ssh-copy-id to make sure your host can log into the helper
+    windows:
+      hosts:
+        windows-db-node:
+          ansible_host: cmf-db-win2k19.cmf-ansible-environment.svc.cluster.local
+          ansible_user: Administrator
+          ansible_password: "super-secret-password"
+          ansible_connection: winrm
+          ansible_winrm_transport: basic

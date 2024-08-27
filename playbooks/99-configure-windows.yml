@@ -38,10 +38,10 @@
     #       /ACTION='install'
     #       /PID="AAAAA-BBBBB-CCCCC-DDDDD-EEEEE" 
     #       /FEATURES=SQL,AS,IS
-    #       /INSTANCENAME=MSSQLSERVER 
+    #       /INSTANCENAME=ONLINE 
     #       /SQLSVCACCOUNT="MyDomain\MyAccount"
     #       /SQLSVCPASSWORD="************" 
-    #       /SQLSYSADMINACCOUNTS="MyDomain\MyAccount "
+    #       /SQLSYSADMINACCOUNTS="localhost\"
     #       /AGTSVCACCOUNT="MyDomain\MyAccount" 
     #       /AGTSVCPASSWORD="************"
     #       /ASSVCACCOUNT="MyDomain\MyAccount" 
@@ -49,7 +49,16 @@
     #       /ISSVCACCOUNT="MyDomain\MyAccount" 
     #       /ISSVCPASSWORD="************"
     #       /ASSYSADMINACCOUNTS="MyDomain\MyAccount"
+  # collation Latin1_General_CI_AS
 
     #   register: sql_server_install_result
     #   failed_when: sql_server_install_result.rc != 0
     #   changed_when: sql_server_install_result.rc == 0
+
+#  STEPS TO DO
+    # Create cmfsu user
+    # install sql server https://download.microsoft.com/download/4/1/b/41b9a8c3-c2b4-4fcc-a3d5-62feed9e6885/SQL2022-SSEI-Eval.exe?culture=en-us&country=us
+    # install SSRS https://download.microsoft.com/download/1/a/a/1aaa9177-3578-4931-b8f3-373b24f63342/SQLServerReportingServices.exe
+    # alter ssrs config to allow user login
+    # mount installation data directory - MOUNT AS SATA!!!!
+    

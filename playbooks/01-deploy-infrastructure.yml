@@ -11,7 +11,7 @@
       ansible.builtin.command: "cmf-portal login -t {{ cmf_secrets.auth_token }}"
 
     - name: Verify that infrastructure exists
-      ansible.builtin.command: "cmf-portal createinfrastructure --name '{{ cmf.infrastructure.name }}' --customer '{{ cmf.customer }}' --ignore-if-exists"
+      ansible.builtin.command: "cmf-portal createinfrastructure --name '{{ cmf_infrastructure }}' --customer '{{ cmf.customer }}' --ignore-if-exists"
 
     - name: Create a directory if it does not exist
       ansible.builtin.file:
@@ -42,13 +42,16 @@
     - name: Create infrastructure Agent Deployment
       ansible.builtin.command: |
           cmf-portal deployagent --name='{{ cmf.agent.name }}' \
-          -trg={{ cmf.agent.target }} \
+          -trg='{{ cmf.agent.target }}' \
           --output='{{ workingDir }}/agent' \
           --deploymentTimeoutMinutes={{ cmf.agent.deploymentTimeout}} \
           --description='{{ cmf.agent.description }}' \
           --parameters='{{ workingDir }}/templates/agent.json' \
           --type='{{ cmf.agent.type }}' \
-          -ci='{{ cmf.infrastructure.name }}'
+          -ci='{{ cmf_infrastructure }}'
+          -tov='{{ cmf.agent.terminateOtherVersions.value }}' \
+          -tovr='{{ cmf.agent.terminateOtherVersions.remove }}' \
+          -tovrv='{{ cmf.agent.terminateOtherVersions.removeVolumes }}'
 
     - name: Reaname and change permissions of deployment file
       ansible.builtin.file:
