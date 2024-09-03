@@ -3,6 +3,11 @@
   hosts: helper
   become: false
   gather_facts: true
+  module_defaults:
+    kubernetes.core.k8s:
+      validate_certs: false
+      api_key: "{{ openshift_login_token }}"
+      host: "https://api.{{ openshift.cluster_domain }}:6443"
   vars_files:
     - ../values.yml
     - ../secrets.yml
@@ -10,49 +15,39 @@
     - name: "Create sysprep configmap"
       kubernetes.core.k8s:
         state: present
-        api_key: "{{ openshift_login_token }}"
-        host: "https://api.{{ openshift.cluster_domain }}:6443"
         template: ../templates/win-sysprep.yml.j2
 
-    - name: "Create actual vm"
-      kubernetes.core.k8s:
-        api_key: "{{ openshift_login_token }}"
-        host: "https://api.{{ openshift.cluster_domain }}:6443"
-        state: present
-        template: ../templates/win-server2019.yml.j2  
+    # - name: "Create actual vm"
+    #   kubernetes.core.k8s:
+    #     state: present
+    #     template: ../templates/win-server2019.yml.j2  
 
-    - name: Wait for VM to be ready
-      kubernetes.core.k8s_info:
-        api_key: "{{ openshift_login_token }}"
-        host: "https://api.{{ openshift.cluster_domain }}:6443"
-        api_version: kubevirt.io/v1
-        kind: VirtualMachine
-        name: "{{ cmf_db_server_name }}"
-        namespace: "{{ cmf.environment.name }}"
-      register: deploy_collection_vm
-      retries: 60
-      delay: 10
-      until:
-      - deploy_collection_vm.resources[0].status is defined
-      - deploy_collection_vm.resources[0].status.ready is true
+    # - name: Wait for VM to be ready
+    #   kubernetes.core.k8s_info:
+    #     api_version: kubevirt.io/v1
+    #     kind: VirtualMachine
+    #     name: "{{ cmf_db_server_name }}"
+    #     namespace: "{{ cmf.environment.name }}"
+    #   register: deploy_collection_vm
+    #   retries: 60
+    #   delay: 10
+    #   until:
+    #   - deploy_collection_vm.resources[0].status is defined
+    #   - deploy_collection_vm.resources[0].status.ready is true
 
-    - name: Wait for VM IP to be populated
-      kubernetes.core.k8s_info:
-        api_key: "{{ openshift_login_token }}"
-        host: "https://api.{{ openshift.cluster_domain }}:6443"
-        api_version: kubevirt.io/v1
-        kind: VirtualMachineInstance
-        name: "{{ cmf_db_server_name }}"
-        namespace: "{{ cmf.environment.name }}"
-      register: deploy_collection_vmi
-      retries: 60
-      delay: 10
-      until: (deploy_collection_vmi.resources[0].status.interfaces[0]['ipAddress'] | default('')) | length > 0    
+    # - name: Wait for VM IP to be populated
+    #   kubernetes.core.k8s_info:
+    #     api_version: kubevirt.io/v1
+    #     kind: VirtualMachineInstance
+    #     name: "{{ cmf_db_server_name }}"
+    #     namespace: "{{ cmf.environment.name }}"
+    #   register: deploy_collection_vmi
+    #   retries: 60
+    #   delay: 10
+    #   until: (deploy_collection_vmi.resources[0].status.interfaces[0]['ipAddress'] | default('')) | length > 0    
 
     - name: "Create Service"
       kubernetes.core.k8s:
-        api_key: "{{ openshift_login_token }}"
-        host: "https://api.{{ openshift.cluster_domain }}:6443"
         state: present
         template: ../templates/network/win-services.yml.j2
 

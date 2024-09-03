@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: "cmf-db-win2k19"
+  namespace: "cmf-ansible-environment"
+
+spec:
+  ports:
+    - name: mssql
+      protocol: TCP
+      port: 31433
+      targetPort: 31433
+      nodePort: 31433
+  type: NodePort
+  selector:
+     app.kubernetes.io/name: "cmf-db-win2k19"

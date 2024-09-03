@@ -7,15 +7,14 @@
     - ../values.yml
     - ../secrets.yml
   tasks:
-    - name: Download the 7-Zip package
-      win_get_url:
-        url: https://www.7-zip.org/a/7z1701-x64.msi
-        dest: C:\temp\7z.msi
+    - name: Change the hostname to 
+      ansible.windows.win_hostname:
+        name: "{{ cmf_db_server_name }}"
+      register: res
 
-    - name: Ensure 7-Zip is installed through win_package
-      win_package:
-        path: C:\temp\7z.msi
-        state: present
+    - name: Reboot if required
+      ansible.windows.win_reboot:
+      when: res.reboot_required
 
     - name: create user account for db on windows
       # Content suggestion provided by Ansible Lightspeed
@@ -25,7 +24,17 @@
         groups:
           - Users
         state: present
-
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: 'C:\temp\'
+        state: directory
+        mode: '0755'
+      register: _outputDir
+    
+    - name: Populate the SQL server templates
+      ansible.builtin.template:
+        src: ../templates/dbconfigfile.ini.j2
+        dest: 'C:\temp\Configfile.ini'
 
     # - name: Install SQL server on windows
     #   # Content suggestion provided by Ansible Lightspeed
@@ -39,10 +48,10 @@
     #       /PID="AAAAA-BBBBB-CCCCC-DDDDD-EEEEE" 
     #       /FEATURES=SQL,AS,IS
     #       /INSTANCENAME=ONLINE 
-    #       /SQLSVCACCOUNT="MyDomain\MyAccount"
+    #       /SQLSVCACCOUNT="\MyAccount"
     #       /SQLSVCPASSWORD="************" 
     #       /SQLSYSADMINACCOUNTS="localhost\"
-    #       /AGTSVCACCOUNT="MyDomain\MyAccount" 
+    #       /AGTSVCACCOUNT="\cmfsu" 
     #       /AGTSVCPASSWORD="************"
     #       /ASSVCACCOUNT="MyDomain\MyAccount" 
     #       /ASSVCPASSWORD="************"
@@ -61,4 +70,21 @@
     # install SSRS https://download.microsoft.com/download/1/a/a/1aaa9177-3578-4931-b8f3-373b24f63342/SQLServerReportingServices.exe
     # alter ssrs config to allow user login
     # mount installation data directory - MOUNT AS SATA!!!!
+    # fix SQL server instance ports
+
+# ------ scripts to run on windows to enable Ansible. Build into golden image -----
+# Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Private
+# Enable-PSRemoting -Force
+# winrm quickconfig -q
+# winrm quickconfig -transport:http
+# winrm set winrm/config '@{MaxTimeoutms="1800000"}'
+# winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="800"}'
+# winrm set winrm/config/service '@{AllowUnencrypted="true"}'
+# winrm set winrm/config/service/auth '@{Basic="true"}'
+# winrm set winrm/config/client/auth '@{Basic="true"}'
+# winrm set winrm/config/listener?Address=*+Transport=HTTP '@{Port="5985"}'
+# netsh advfirewall firewall set rule group="Windows Remote Administration" new enable=yes
+# netsh advfirewall firewall set rule name="Windows Remote Management (HTTP-In)" new enable=yes action=allow remoteip=any
+# Set-Service winrm -startuptype "auto"
+# Restart-Service winrm
     

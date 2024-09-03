@@ -28,11 +28,12 @@ cmf:
     type: Development #Development|Production|Staging|Testing 
     target: "OpenShiftRemoteTarget" #OpenShiftOnPremisesTarget|OpenShiftRemoteTarget
     deploymentTimeout: 360 #Deployment timeout minutes
+    dbmode: "mssql" #mssql|analytics|none
     terminateOtherVersions: 
       value: false
       remove: true #Remove the deployments from cluster as well
       removeVolumes: false #Remove data volumes of other versions
     #these parameters are specific to the environment and to be provided as on portal.criticalmanufacturing.com
     site: "Red Hat" #Site licensed by CMF
-    package: "@criticalmanufacturing\mes:10.2.5" # The version for MES to install, Other packages not yet checked with this repo
-    license: "Some-Company-Name_v10.0.0_ED00000000" #License name provided by CMF
+    package: '@criticalmanufacturing\mes:10.2.5' # The version for MES to install, Other packages not yet checked with this repo
+    license: 'Some-Company-Name_v10.0.0_ED00000000' #License name provided by CMF

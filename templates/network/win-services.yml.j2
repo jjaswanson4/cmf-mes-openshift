@@ -12,8 +12,8 @@ spec:
       targetPort: 80
     - name: mssql
       protocol: TCP
-      port: 1433
-      targetPort: 1433
+      port: 31433
+      targetPort: 31433
     - name: ssrs-https
       protocol: TCP
       port: 443
@@ -25,7 +25,7 @@ spec:
     - name: winrm
       protocol: TCP
       port: 5985
-      targetPort: 5980
+      targetPort: 5985
   type: ClusterIP
   selector:
      app.kubernetes.io/name: "{{ cmf_db_server_name }}"

@@ -86,15 +86,17 @@ spec:
               name: 'tablet'
               type: 'tablet'
           interfaces:
-            - macAddress: '02:9e:19:00:00:1f'
+            - macAddress: "{{ '02:9e:19' | community.general.random_mac }}" 
               masquerade: {}
               model: 'e1000e'
               name: 'default'
               ports:
                 - name: ssh
                   port: 22
+                - name: winrm
+                  port: 5985
                 - name: windows-db
-                  port: 1433
+                  port: 31433
                 - name: ssrs-http
                   port: 80
                 - name: ssrs-https

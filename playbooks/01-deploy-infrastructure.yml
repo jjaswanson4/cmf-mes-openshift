@@ -8,10 +8,10 @@
     - ../secrets.yml
   tasks:
     - name: Login to the CMF CMF-Portal
-      ansible.builtin.command: "cmf-portal login -t {{ cmf_secrets.auth_token }}"
+      ansible.builtin.command: "/home/ansible/Cmf.CustomerPortal.Sdk.Console-1.14.10.linux-x64/cmf-portal login -t {{ cmf_secrets.auth_token }}"
 
     - name: Verify that infrastructure exists
-      ansible.builtin.command: "cmf-portal createinfrastructure --name '{{ cmf_infrastructure }}' --customer '{{ cmf.customer }}' --ignore-if-exists"
+      ansible.builtin.command: "/home/ansible/Cmf.CustomerPortal.Sdk.Console-1.14.10.linux-x64/cmf-portal createinfrastructure --name '{{ cmf_infrastructure }}' --customer '{{ cmf.customer }}' --ignore-if-exists"
 
     - name: Create a directory if it does not exist
       ansible.builtin.file:
@@ -41,7 +41,7 @@
 
     - name: Create infrastructure Agent Deployment
       ansible.builtin.command: |
-          cmf-portal deployagent --name='{{ cmf.agent.name }}' \
+          /home/ansible/Cmf.CustomerPortal.Sdk.Console-1.14.10.linux-x64/cmf-portal deployagent --name='{{ cmf.agent.name }}' \
           -trg='{{ cmf.agent.target }}' \
           --output='{{ workingDir }}/agent' \
           --deploymentTimeoutMinutes={{ cmf.agent.deploymentTimeout}} \
