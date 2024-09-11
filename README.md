@@ -12,6 +12,7 @@ References:
 - SHH root access setup to helper, either by means of sshpass, or [passwordless sudo access](https://developers.redhat.com/blog/2018/08/15/how-to-enable-sudo-on-rhel) (remember to copy your ssh id to the helper)
 - An openshift cluster accessible from the helper, and a login token for server.
 - have ansible-playbook and ansible-galaxy commands available locally, if not, see https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+- CIFS/SMB CSI driver installed- https://docs.openshift.com/container-platform/4.16/storage/container_storage_interface/persistent-storage-csi-smb-cifs.html#:~:text=The%20CIFS%2FSMB%20CSI%20Driver,administrators%20to%20pre%2Dprovision%20storage.
  
 
 # Repository structure
@@ -76,6 +77,57 @@ ansible-playbook -vvi inventory.yml playbooks/00-prepare-host.yml
 ```  
 
 
+## create SQL servers on Openshift Virt
+In order to create the windows VM on Openshift Virt, the following playbook is available.
+
+```
+ansible-playbook -vvvi inventory.yml playbooks/97-deploy-windows-database.yml --ask-vault-pass
+```
+
+This will deploy a single windows server vm to Openshift virt.
+Currently this server sill requires some manual intervention for further automation to be able to run.
+On the windows server, Copy the followying to powershell and run.
+
+```
+# ------ scripts to run on windows to enable Ansible. Build into golden image -----
+Get-NetConnectionProfile | Set-NetConnectionProfile -NetworkCategory Private; 
+Enable-PSRemoting -Force; 
+winrm quickconfig -q; 
+winrm quickconfig -transport:http; 
+winrm set winrm/config '@{MaxTimeoutms="1800000"}'; 
+winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="800"}'; 
+winrm set winrm/config/service '@{AllowUnencrypted="true"}'; 
+winrm set winrm/config/service/auth '@{Basic="true"}'; 
+winrm set winrm/config/client/auth '@{Basic="true"}'; 
+winrm set winrm/config/listener?Address=*+Transport=HTTP '@{Port="5985"}'; 
+netsh advfirewall firewall set rule group="Windows Remote Administration" new enable=yes; 
+netsh advfirewall firewall set rule name="Windows Remote Management (HTTP-In)" new enable=yes action=allow remoteip=any; 
+Set-Service winrm -startuptype "auto"; 
+Restart-Service winrm
+```
+
+
+<!-- log into windows server and run in powershell
+```
+Set-Item -Path WSMan:\localhost\Service\Auth\Basic -Value $true
+``` -->
+
+Once the server is up and running we can start to install and configure the Microsoft SQL database, Analysis services, and reporting services by using automation.
+Run the configure-windows playbook.
+```
+ansible-playbook -vvvi inventory.yml playbooks/98-configure-windows.yml --ask-vault-pass
+```
+
+TODO!!!!
+Configure the correct storage.
+Based on the cluster type and storage operators used, there are various options to be considered at this stage.
+The easiest option would be if Openshift Data Foundations are installed with the RWX storage class cephfs available.
+Make sure that is setup in the values.yml file.
+
+For Single Node Openshift where only the LVM storage is available, manually create the storag
+
+
+
 ## Create infrastructure and agent: 
 The infrastructure agent for each infrastructure will be the part that maintains the MES application installed within it.
 Only a single agent is allowed per infrastructure, but it can manage multiple environments.
@@ -85,23 +137,6 @@ Fill out the agent section in the values.yml file if you have not already done s
 ```
 ansible-playbook -vvvi inventory.yml playbooks/01-deploy-infrastructure.yml --ask-vault-pass
 ```
-
-## create SQL servers on Openshift Virt
-In order to create the windows VM on Openshift Virt, the following playbook is available.
-
-```
-ansible-playbook -vvvi inventory.yml playbooks/02-deploy-environment.yml --ask-vault-pass
-```
-
-This will deploy a single windows server vm to Openshift virt.
-
-TODO: configure the database services.
-
-log into windows server and run in powershell
-```
-Set-Item -Path WSMan:\localhost\Service\Auth\Basic -Value $true
-```
-
 
 
 ## Deploy each environment

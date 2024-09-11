@@ -1,0 +1,45 @@
+---
+- name: "Create shared installation data directory for CMF MES"
+  hosts: windows
+  gather_facts: true
+  become: false
+  vars_files:
+    - ../values.yml
+    - ../secrets.yml
+  tasks:
+    - name: Create install_dir directory
+      ansible.windows.win_file:
+        # path: "{{ cmf.environment.install_data_path }}"
+        path: "{{ cmf.environment.install_data_path }}"
+        state: directory
+
+    - name: Add windows share for install dir
+      ansible.windows.win_share:
+        name: shares
+        description: Installation data share
+        path: "{{ cmf.environment.install_data_path }}"
+        list: true
+        full: 'Administrators'
+        read: Users
+
+# these tasks need to be run from linux-side
+- hosts: helper
+  gather_facts: true
+  module_defaults:
+    kubernetes.core.k8s:
+      validate_certs: false
+      api_key: "{{ openshift_login_token }}"
+      host: "https://api.{{ openshift.cluster_domain }}:6443"
+  vars_files:
+    - ../values.yml
+    - ../secrets.yml
+  tasks:
+    - name: Create Service for SMB access to vm
+      kubernetes.core.k8s:
+        state: present
+        template: "../templates/network/win-smb-services.yml.j2"
+      
+    - name: Configure SMB mounts
+      kubernetes.core.k8s:
+        state: present
+        template: ../templates/smb.yml.j2

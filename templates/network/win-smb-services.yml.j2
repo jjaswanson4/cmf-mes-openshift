@@ -1,0 +1,26 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: "{{ 'smb-' + cmf_db_server_name }}"
+  namespace: "{{ cmf.environment.name }}"
+spec:
+  ports:
+    - name: smb
+      protocol: TCP
+      port: 139
+      targetPort: 139
+    - name: smb-2
+      protocol: TCP
+      port: 445
+      targetPort: 445
+    - name: smb-udp1
+      protocol: UDP
+      port: 137
+      targetPort: 137
+    - name: smb-udp2
+      protocol: UDP
+      port: 138
+      targetPort: 138
+  type: ClusterIP
+  selector:
+     app.kubernetes.io/name: "{{ cmf_db_server_name }}"

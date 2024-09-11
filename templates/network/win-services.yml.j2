@@ -1,8 +1,8 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ cmf_db_server_name }}
-  namespace: {{ cmf.environment.name }}
+  name: "{{ cmf_db_server_name }}"
+  namespace: "{{ cmf.environment.name }}"
 
 spec:
   ports:
@@ -12,8 +12,12 @@ spec:
       targetPort: 80
     - name: mssql
       protocol: TCP
-      port: 31433
-      targetPort: 31433
+      port: 1433
+      targetPort: 1433
+    - name: mssql-mgnt
+      protocol: UDP
+      port: 1434
+      targetPort: 1434
     - name: ssrs-https
       protocol: TCP
       port: 443

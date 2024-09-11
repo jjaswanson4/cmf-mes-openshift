@@ -96,13 +96,18 @@ spec:
                 - name: winrm
                   port: 5985
                 - name: windows-db
-                  port: 31433
+                  port: 1433
+                - name: windows-db-mgnt
+                  port: 1434
+                  protocol: UDP
                 - name: ssrs-http
                   port: 80
                 - name: ssrs-https
                   port: 443
                 - name: ssas
                   port: 2383
+                - name: smb
+                  port: 445
         features:
           acpi: {}
           apic: {}

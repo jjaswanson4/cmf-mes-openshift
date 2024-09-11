@@ -1,0 +1,141 @@
+---
+- name: "Install and configure database for CMF on Windows"
+  hosts: windows
+  become: false
+  gather_facts: true
+  vars_files:
+    - ../values.yml
+    - ../secrets.yml
+  tasks:
+#     - name: Change the hostname to 
+#       ansible.windows.win_hostname:
+#         name: "{{ cmf_db_server_name }}"
+#       register: res
+
+#     - name: Reboot if required
+#       ansible.windows.win_reboot:
+#       when: res.reboot_required
+
+#     - name: create user account for db on windows
+#       # Content suggestion provided by Ansible Lightspeed
+#       ansible.windows.win_user:
+#         name: "{{ db_username }}"
+#         password: "{{ db_password }}"
+#         groups:
+#           - Users
+#           - Administrators
+#         state: present
+#     - name: Create a directory if it does not exist
+#       ansible.windows.win_file:
+#         path: 'C:\temp\'
+#         state: directory
+#       register: _outputDir
+      
+# ####### SQL server setup 
+#     - name: Populate the SQL server templates
+#       ansible.builtin.template:
+#         src: ../templates/dbconfigfile.ini.j2
+#         dest: 'C:\temp\Configfile.ini'
+
+#     - name: Download the SQL server installer
+#       ansible.windows.win_get_url:
+#         url: 'https://download.microsoft.com/download/4/1/b/41b9a8c3-c2b4-4fcc-a3d5-62feed9e6885/SQL2022-SSEI-Eval.exe?culture=en-us&country=us'
+#         dest: 'C:\temp\'
+  
+#     - name: Install SQL server on windows
+#       # Content suggestion provided by Ansible Lightspeed
+#       ansible.windows.win_package:
+#         path: 'C:\temp\SQL2022-SSEI-Eval.exe'
+#         product_id: 'Microsoft SQL Server SQL2022'
+#         arguments: 
+#           - /Q 
+#           - /v
+#           - /CONFIGURATIONFILE='C:\temp\Configfile.ini'
+#           - /IACCEPTSQLSERVERLICENSETERMS 
+#           - /MEDIAPATH='C:\temp'
+#               #   register: sql_server_install_result
+
+    - name: Move named instance registry to set sql server port
+      ansible.windows.win_regedit:
+        path: 'HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL16.ONLINE\MSSQLServer\SuperSocketNetLib\Tcp\IPAll'
+        name: TcpPort
+        data: 1433
+    - name: Disable dynamic ports in registry
+      ansible.windows.win_regedit:
+        path: 'HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL16.ONLINE\MSSQLServer\SuperSocketNetLib\Tcp\'
+        name: TcpDynamicPorts
+        data: ''
+
+    - name: Restart SQL service
+      ansible.windows.win_service:
+        name: "SQL Server (ONLINE)"
+        state: restarted
+    - name: Firewall rule to allow Database communication
+      community.windows.win_firewall_rule:
+        name: MS SQL 
+        localport: 1433
+        action: allow
+        direction: in
+        protocol: tcp
+        state: present
+        enabled: yes
+    - name: Firewall rule to allow Database management communication
+      community.windows.win_firewall_rule:
+        name: MS SQL Mgnt
+        localport: 1434
+        action: allow
+        direction: in
+        protocol: UDP
+        state: present
+        enabled: yes
+
+    - name: Firewall rule to allow Report Server communication
+      community.windows.win_firewall_rule:
+        name: MS SQL Analysis Services 
+        localport: 2383
+        action: allow
+        direction: in
+        protocol: tcp
+        state: present
+        enabled: yes
+
+####### SQL Reporting Services setup 
+    # - name: Install SQL server on windows
+    #   # Content suggestion provided by Ansible Lightspeed
+    #   ansible.windows.win_package:
+    #     path: 'https://download.microsoft.com/download/1/a/a/1aaa9177-3578-4931-b8f3-373b24f63342/SQLServerReportingServices.exe'
+    #     product_id: '{C72EBF99-ED51-45FC-804B-82B1AC8923E7}'
+    #     arguments: 
+    #       - /IAcceptLicenseTerms 
+    #       - /quiet
+
+    - name: Configure SSRS
+      ansible.windows.win_command:
+        cmd: '"C:\Program Files\Microsoft SQL Server Reporting Services\Shared Tools\RSConfig.exe" -c  -s "{{ cmf_db_server_name }}" -i SSRS -d ONLINE -a Windows -u "{{ cmf_db_server_name }}\{{ db_username }}" -p "{{ admin_password }}" -t'
+
+    #   register: sql_server_install_result
+    #   failed_when: sql_server_install_result.rc != 0
+    #   changed_when: sql_server_install_result.rc == 0
+    - name: Firewall rule to allow Report Server communication
+      community.windows.win_firewall_rule:
+        name: MS SQL Reporting Services 
+        localport: 80,443
+        action: allow
+        direction: in
+        protocol: tcp
+        state: present
+        enabled: yes
+
+
+#  STEPS TO DO
+    # xxCreate cmfsu user
+    # xx install sql server https://download.microsoft.com/download/4/1/b/41b9a8c3-c2b4-4fcc-a3d5-62feed9e6885/SQL2022-SSEI-Eval.exe?culture=en-us&country=us
+    # xx - SSAS: {66F0F7CE-0D19-44CF-8785-31CE14CAE18B}
+    # xx fix SQL server instance ports
+    # xx install SSRS https://download.microsoft.com/download/1/a/a/1aaa9177-3578-4931-b8f3-373b24f63342/SQLServerReportingServices.exe
+    # configure SSRS
+    # alter ssrs config to allow user login
+    # mount installation data directory - MOUNT AS SATA!!!!
+
+
+    

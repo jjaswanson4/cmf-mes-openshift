@@ -19,7 +19,7 @@ SUPPRESSPRIVACYSTATEMENTNOTICE="False"
 
 ; Setup will not display any user interface. 
 
-QUIET="TRUE"
+QUIET="False"
 
 ; Setup will display progress only, without any user interaction. 
 
@@ -27,7 +27,7 @@ QUIETSIMPLE="False"
 
 ; Parameter that controls the user interface behavior. Valid values are Normal for the full UI,AutoAdvance for a simplied UI, and EnableUIOnServerCore for bypassing Server Core setup GUI block. 
 
-; UIMODE="Normal"
+UIMODE="Normal"
 
 ; Specify whether SQL Server Setup should discover and include product updates. The valid values are True and False or 1 and 0. By default SQL Server Setup will include updates that are found. 
 
@@ -95,7 +95,7 @@ INSTANCEDIR="C:\Program Files\Microsoft SQL Server"
 
 ; Agent account name. 
 
-AGTSVCACCOUNT="{{ cmf_db_server_name }}\{{ cmf_secrets.database.online.username }}"
+AGTSVCACCOUNT="CMF-DB-WIN2K19\cmfsu"
 
 ; Auto-start service after installation.  
 
@@ -139,7 +139,7 @@ ASPROVIDERMSOLAP="1"
 
 ; Specifies the list of administrator accounts that need to be provisioned. 
 
-ASSYSADMINACCOUNTS="{{ cmf_db_server_name }}\{{ cmf_secrets.database.online.username }}"
+ASSYSADMINACCOUNTS="CMF-DB-WIN2K19\cmfsu"
 
 ; Specifies the server mode of the Analysis Services instance. Valid values are MULTIDIMENSIONAL and TABULAR. The default value is TABULAR. 
 
@@ -167,7 +167,7 @@ SQLCOLLATION="Latin1_General_CI_AS"
 
 ; Account for SQL Server service: Domain\User or system account. 
 
-SQLSVCACCOUNT="{{ cmf_db_server_name }}\{{ cmf_secrets.database.online.username }}"
+SQLSVCACCOUNT="CMF-DB-WIN2K19\cmfsu"
 
 ; Set to "True" to enable instant file initialization for SQL Server service. If enabled, Setup will grant Perform Volume Maintenance Task privilege to the Database Engine Service SID. This may lead to information disclosure as it could allow deleted content to be accessed by an unauthorized principal. 
 
@@ -175,7 +175,7 @@ SQLSVCINSTANTFILEINIT="False"
 
 ; Windows account(s) to provision as SQL Server system administrators. 
 
-SQLSYSADMINACCOUNTS="{{ cmf_db_server_name }}\{{ cmf_secrets.database.online.username }}"
+SQLSYSADMINACCOUNTS="CMF-DB-WIN2K19\cmfsu"
 
 ; The default is Windows Authentication. Use "SQL" for Mixed Mode Authentication. 
 
@@ -183,7 +183,7 @@ SECURITYMODE="SQL"
 
 ; The number of Database Engine TempDB files. 
 
-SQLTEMPDBFILECOUNT="2"
+SQLTEMPDBFILECOUNT="4"
 
 ; Specifies the initial size of a Database Engine TempDB data file in MB. 
 
@@ -224,9 +224,3 @@ SQLMAXMEMORY="2147483647"
 ; Use SQLMINMEMORY to reserve a minimum amount of memory available to the SQL Server Memory Manager. 
 
 SQLMINMEMORY="0"
-
-SQLSVCPASSWORD="{{ cmf_secrets.database.online.password }}"
-AGTSVCPASSWORD="{{ cmf_secrets.database.online.password }}"
-ASSVCPASSWORD="{{ cmf_secrets.database.online.password }}" 
-ISSVCPASSWORD="{{ cmf_secrets.database.online.password }}"
-SAPWD="{{ cmf_secrets.database.online.password }}"

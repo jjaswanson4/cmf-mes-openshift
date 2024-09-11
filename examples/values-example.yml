@@ -8,6 +8,7 @@ openshift:
 
 cmf_infrastructure: cmf-ansible-infrastructure  #Change according to the infrastructure to define on the DevOpsPortal from CMF
 cmf_db_server_name: "cmf-db-win2k19"
+cmf_installation_data_pv: installation-data #if using a precreated pv, this is important!
 cmf:
   customer: "The-customer-linked-to-the-cmf-license"
   agent:
@@ -29,6 +30,8 @@ cmf:
     target: "OpenShiftRemoteTarget" #OpenShiftOnPremisesTarget|OpenShiftRemoteTarget
     deploymentTimeout: 360 #Deployment timeout minutes
     dbmode: "mssql" #mssql|analytics|none
+    #This is thte path to the installation data directory as seen by MSSQL server use /var/opt/envmanager/installation-data for mssql dbmode
+    install_data_path: 'C:\\shares\\{{ cmf_installation_data_pv }}' 
     terminateOtherVersions: 
       value: false
       remove: true #Remove the deployments from cluster as well
