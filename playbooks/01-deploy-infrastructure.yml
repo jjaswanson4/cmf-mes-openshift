@@ -5,6 +5,11 @@
   vars_files:
     - ../values.yml
     - ../secrets.yml
+  module_defaults:
+  kubernetes.core.k8s:
+    validate_certs: false
+    api_key: "{{ openshift_login_token }}"
+    host: "https://api.{{ openshift.cluster_domain }}:6443"
   tasks:
     - name: Login to the CMF CMF-Portal
       ansible.builtin.command: "~/Cmf.CustomerPortal.Sdk.Console-1.14.10.linux-x64/cmf-portal login -t {{ cmf_secrets.auth_token }}"
@@ -72,8 +77,6 @@
 
     - name: Deploy the required Traefik custom resources
       kubernetes.core.k8s:
-        api_key: "{{ openshift_login_token }}"
-        host: "https://api.{{ openshift.cluster_domain }}:6443"
         state: present
         src: "https://raw.githubusercontent.com/traefik/traefik/v2.10/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml"
         # src: "https://raw.githubusercontent.com/traefik/traefik/\
@@ -92,8 +95,6 @@
 
     - name: Loop through the components and deploy to Openshift
       kubernetes.core.k8s:
-        api_key: "{{ openshift_login_token }}"
-        host: "https://api.{{ openshift.cluster_domain }}:6443"
         apply: true
         server_side_apply:
           field_manager: "{{ item.split('--field-manager=').1.split(' ').0 }}"
