@@ -12,6 +12,12 @@
     - ../values.yml
     - ../secrets.yml
   tasks:
+    - name: Ensure the kubernetes namespace exists
+      kubernets.core.k8s:
+        name: "{{ cmf.environment.name }}"
+        kind: Namespace
+        state: present
+
     - name: "Create sysprep configmap"
       kubernetes.core.k8s:
         state: present
