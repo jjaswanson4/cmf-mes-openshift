@@ -1,7 +1,7 @@
 ---
 - name: "Setup ansible host for CMF deployment"
   hosts: helper
-  become: true
+  become: false
   gather_facts: true
   tasks:
     # setup the host machine to be able to install NPM packages and install the cmf-portal npm package
