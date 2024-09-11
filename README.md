@@ -104,10 +104,6 @@ Set-Service winrm -startuptype "auto";
 Restart-Service winrm
 ```
 
-<!-- log into windows server and run in powershell
-```
-Set-Item -Path WSMan:\localhost\Service\Auth\Basic -Value $true
-``` -->
 
 Once the server is up and running we can start to install and configure the Microsoft SQL database, Analysis services, and reporting services by using automation.
 Run the configure-windows playbook.

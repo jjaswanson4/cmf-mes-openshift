@@ -7,53 +7,53 @@
     - ../values.yml
     - ../secrets.yml
   tasks:
-#     - name: Change the hostname to 
-#       ansible.windows.win_hostname:
-#         name: "{{ cmf_db_server_name }}"
-#       register: res
+    - name: Change the hostname to 
+      ansible.windows.win_hostname:
+        name: "{{ cmf_db_server_name }}"
+      register: res
 
-#     - name: Reboot if required
-#       ansible.windows.win_reboot:
-#       when: res.reboot_required
+    - name: Reboot if required
+      ansible.windows.win_reboot:
+      when: res.reboot_required
 
-#     - name: create user account for db on windows
-#       # Content suggestion provided by Ansible Lightspeed
-#       ansible.windows.win_user:
-#         name: "{{ db_username }}"
-#         password: "{{ db_password }}"
-#         groups:
-#           - Users
-#           - Administrators
-#         state: present
-#     - name: Create a directory if it does not exist
-#       ansible.windows.win_file:
-#         path: 'C:\temp\'
-#         state: directory
-#       register: _outputDir
+    - name: create user account for db on windows
+      # Content suggestion provided by Ansible Lightspeed
+      ansible.windows.win_user:
+        name: "{{ db_username }}"
+        password: "{{ db_password }}"
+        groups:
+          - Users
+          - Administrators
+        state: present
+    - name: Create a directory if it does not exist
+      ansible.windows.win_file:
+        path: 'C:\temp\'
+        state: directory
+      register: _outputDir
       
-# ####### SQL server setup 
-#     - name: Populate the SQL server templates
-#       ansible.builtin.template:
-#         src: ../templates/dbconfigfile.ini.j2
-#         dest: 'C:\temp\Configfile.ini'
+####### SQL server setup 
+    - name: Populate the SQL server templates
+      ansible.builtin.template:
+        src: ../templates/dbconfigfile.ini.j2
+        dest: 'C:\temp\Configfile.ini'
 
-#     - name: Download the SQL server installer
-#       ansible.windows.win_get_url:
-#         url: 'https://download.microsoft.com/download/4/1/b/41b9a8c3-c2b4-4fcc-a3d5-62feed9e6885/SQL2022-SSEI-Eval.exe?culture=en-us&country=us'
-#         dest: 'C:\temp\'
+    - name: Download the SQL server installer
+      ansible.windows.win_get_url:
+        url: 'https://download.microsoft.com/download/4/1/b/41b9a8c3-c2b4-4fcc-a3d5-62feed9e6885/SQL2022-SSEI-Eval.exe?culture=en-us&country=us'
+        dest: 'C:\temp\'
   
-#     - name: Install SQL server on windows
-#       # Content suggestion provided by Ansible Lightspeed
-#       ansible.windows.win_package:
-#         path: 'C:\temp\SQL2022-SSEI-Eval.exe'
-#         product_id: 'Microsoft SQL Server SQL2022'
-#         arguments: 
-#           - /Q 
-#           - /v
-#           - /CONFIGURATIONFILE='C:\temp\Configfile.ini'
-#           - /IACCEPTSQLSERVERLICENSETERMS 
-#           - /MEDIAPATH='C:\temp'
-#               #   register: sql_server_install_result
+    - name: Install SQL server on windows
+      # Content suggestion provided by Ansible Lightspeed
+      ansible.windows.win_package:
+        path: 'C:\temp\SQL2022-SSEI-Eval.exe'
+        product_id: 'Microsoft SQL Server SQL2022'
+        arguments: 
+          - /Q 
+          - /v
+          - /CONFIGURATIONFILE='C:\temp\Configfile.ini'
+          - /IACCEPTSQLSERVERLICENSETERMS 
+          - /MEDIAPATH='C:\temp'
+              #   register: sql_server_install_result
 
     - name: Move named instance registry to set sql server port
       ansible.windows.win_regedit:
@@ -100,14 +100,14 @@
         enabled: yes
 
 ####### SQL Reporting Services setup 
-    # - name: Install SQL server on windows
-    #   # Content suggestion provided by Ansible Lightspeed
-    #   ansible.windows.win_package:
-    #     path: 'https://download.microsoft.com/download/1/a/a/1aaa9177-3578-4931-b8f3-373b24f63342/SQLServerReportingServices.exe'
-    #     product_id: '{C72EBF99-ED51-45FC-804B-82B1AC8923E7}'
-    #     arguments: 
-    #       - /IAcceptLicenseTerms 
-    #       - /quiet
+    - name: Install SQL server on windows
+      # Content suggestion provided by Ansible Lightspeed
+      ansible.windows.win_package:
+        path: 'https://download.microsoft.com/download/1/a/a/1aaa9177-3578-4931-b8f3-373b24f63342/SQLServerReportingServices.exe'
+        product_id: '{C72EBF99-ED51-45FC-804B-82B1AC8923E7}'
+        arguments: 
+          - /IAcceptLicenseTerms 
+          - /quiet
 
     - name: Configure SSRS
       ansible.windows.win_command:
