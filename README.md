@@ -1,5 +1,3 @@
-# What is 
-
 The purpose of this repository is to provide a base for automated installation of the Critical Manufacturing MES on Openshift using Ansible and their shell SDK.
 
 References:
@@ -106,7 +104,6 @@ Set-Service winrm -startuptype "auto";
 Restart-Service winrm
 ```
 
-
 <!-- log into windows server and run in powershell
 ```
 Set-Item -Path WSMan:\localhost\Service\Auth\Basic -Value $true
@@ -124,7 +121,7 @@ Based on the cluster type and storage operators used, there are various options 
 The easiest option would be if Openshift Data Foundations are installed with the RWX storage class cephfs available.
 Make sure that is setup in the values.yml file.
 
-For Single Node Openshift where only the LVM storage is available, manually create the storag
+For Single Node Openshift where only the LVM storage is available, manually create the storage volumes in order to be able to support RWX modes that are required by several of the Critical Manufacturing containers.
 
 
 
@@ -155,5 +152,3 @@ ansible-playbook -vvvi inventory.yml playbooks/02-deploy-environment.yml --ask-v
 
 TODO:
  - update to allow multiple environment deployments simultaneously
- - incorporate the terminateOtherVersions commands
- - implement "Openshift Manual" target deployment
