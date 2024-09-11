@@ -73,7 +73,7 @@ Next, we install the Portal SDK packages along with NPM, in order to be able to 
 ```
 ansible-playbook -vvi inventory.yml playbooks/00-prepare-host.yml 
 ```  
-
+TODO - there is an error in the newest NPMs published by CMF. Need to use the direct pull from their git
 
 ## create SQL servers on Openshift Virt
 In order to create the windows VM on Openshift Virt, the following playbook is available.
