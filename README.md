@@ -105,12 +105,6 @@ Restart-Service winrm
 ```
 
 
-Once the server is up and running we can start to install and configure the Microsoft SQL database, Analysis services, and reporting services by using automation.
-Run the configure-windows playbook.
-```
-ansible-playbook -vvvi inventory.yml playbooks/98-configure-windows.yml --ask-vault-pass
-```
-
 TODO!!!!
 Configure the correct storage.
 Based on the cluster type and storage operators used, there are various options to be considered at this stage.
@@ -119,7 +113,13 @@ Make sure that is setup in the values.yml file.
 
 For Single Node Openshift where only the LVM storage is available, manually create the storage volumes in order to be able to support RWX modes that are required by several of the Critical Manufacturing containers.
 
-
+## Setting up the SQL database server
+The MES running in analysis db mode requires a SQL server database.
+Once a connection is available to a Windows host via winrm, the database services and configurations can be applied by running
+```
+ansible-playbook -vvvi inventory.yml playbooks/98-configure-windows.yml --ask-vault-pass
+```
+Make sure you can log into the db user spcified. If the SQL install fails, it might be because of Windows magic upon first login
 
 ## Create infrastructure and agent: 
 The infrastructure agent for each infrastructure will be the part that maintains the MES application installed within it.
