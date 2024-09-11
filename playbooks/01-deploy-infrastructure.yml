@@ -1,4 +1,3 @@
----
 - name: "configure and deploy CMF infrastructure"
   hosts: helper
   become: false

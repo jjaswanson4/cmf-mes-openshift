@@ -13,7 +13,7 @@
     - ../secrets.yml
   tasks:
     - name: Ensure the kubernetes namespace exists
-      kubernets.core.k8s:
+      kubernetes.core.k8s:
         name: "{{ cmf.environment.name }}"
         kind: Namespace
         state: present
