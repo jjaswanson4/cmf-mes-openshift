@@ -113,13 +113,28 @@ Make sure that is setup in the values.yml file.
 
 For Single Node Openshift where only the LVM storage is available, manually create the storage volumes in order to be able to support RWX modes that are required by several of the Critical Manufacturing containers.
 
+
+TODO- use output from golden image pipeline to start this VM
+
 ## Setting up the SQL database server
 The MES running in analysis db mode requires a SQL server database.
 Once a connection is available to a Windows host via winrm, the database services and configurations can be applied by running
 ```
 ansible-playbook -vvvi inventory.yml playbooks/98-configure-windows.yml --ask-vault-pass
 ```
-Make sure you can log into the db user spcified. If the SQL install fails, it might be because of Windows magic upon first login
+Make sure you can log into the db user spcified. If the SQL install fails, it might be because of Windows magic upon first login.
+
+Once the playbook has finished execution successfully, log into the Windows server and confirm the correct settings in the SQL Server configuration manager
+![sql-port-config-image](images/mssql-server-port-settings.png)
+
+For the report server, open the Report Server Configuration Manager, and for both the Web Service URL and Web Portal URL follow the advice for the defaults and just click "Apply" on each of these pages.
+
+![msrs-web-service](images/msrs-web-service.png)
+and for the web portal:
+![msrs-web-portal](images/msrs-web-portal.png)
+
+The windows server should now be all set and ready for interfacing with the MES services.
+Now let's deploy them.
 
 ## Create infrastructure and agent: 
 The infrastructure agent for each infrastructure will be the part that maintains the MES application installed within it.

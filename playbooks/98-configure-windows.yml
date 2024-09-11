@@ -55,6 +55,7 @@
           - /MEDIAPATH='C:\temp'
               #   register: sql_server_install_result
 
+# Change registry ports 
     - name: Move named instance registry to set sql server port
       ansible.windows.win_regedit:
         path: 'HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL16.ONLINE\MSSQLServer\SuperSocketNetLib\Tcp\IPAll'
