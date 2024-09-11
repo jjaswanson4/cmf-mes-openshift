@@ -5,12 +5,19 @@
   gather_facts: true
   tasks:
     # setup the host machine to be able to install NPM packages and install the cmf-portal npm package
-    - name: Verify npm is available
-      ansible.builtin.package:
-        name: npm
-        state: present     
+    # - name: Verify npm is available
+    #   ansible.builtin.package:
+    #     name: npm
+    #     state: present     
 
-    - name: Install CMF-Portal using npm.
-      community.general.npm:
-        name: '@criticalmanufacturing/portal'
-        global: true
+    # - name: Install CMF-Portal using npm.
+    #   community.general.npm:
+    #     name: '@criticalmanufacturing/portal'
+    #     global: true
+
+    - name: download and extract zip file to home directory
+      # Content suggestion provided by Ansible Lightspeed
+      ansible.builtin.unarchive:
+        src: "https://github.com/criticalmanufacturing/portal-sdk/releases/download/1.14.10/Cmf.CustomerPortal.Sdk.Console-1.14.10.linux-x64.zip"
+        dest: ~/
+        remote_src: true
