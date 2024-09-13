@@ -1,0 +1,6 @@
+# enable "Client for NFS" service on windows
+
+# HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\ClientForNFS\CurrentVersion\Default
+
+# Create a new New DWORD (32-bit) Value inside the Default folder named AnonymousUid and assign the UID 0 (or another UID/GID if configured in ECS).
+# Create a new New DWORD (32-bit) Value inside the Default folder named AnonymousGid and assign the GID 0 (or another UID/GID if configured in ECS).

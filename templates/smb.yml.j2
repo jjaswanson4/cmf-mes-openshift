@@ -26,7 +26,7 @@ spec:
     - file_mode=0777
   csi:
     driver: smb.csi.k8s.io
-    volumeHandle: smb-server.default.svc.cluster.local/share/ 
+    volumeHandle: "smb-{{ cmf_db_server_name }}.{{ cmf.environment.name }}.svc.cluster.local/shares/"
     volumeAttributes:
       source: //{{ db_host_path }}/shares/{{ cmf_installation_data_pv }} 
     nodeStageSecretRef:

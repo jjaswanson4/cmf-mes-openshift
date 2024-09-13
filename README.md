@@ -111,11 +111,32 @@ Based on the cluster type and storage operators used, there are various options 
 The easiest option would be if Openshift Data Foundations are installed with the RWX storage class cephfs available.
 Make sure that is setup in the values.yml file.
 
-For Single Node Openshift where only the LVM storage is available, manually create the storage volumes in order to be able to support RWX modes that are required by several of the Critical Manufacturing containers.
+## Data directory setup
+
+The Installation Data volume is a special one as it needs to be mountable by several linux-based pods as well as the Windows Database server in the case where a deployment with the Analysis database.
+Here we have a few options depending on the setup of your clusters.
+
+### Cluster with ODF
+In the case where ODF is available, we can create an NFS export from ODF
+https://docs.redhat.com/en/documentation/red_hat_openshift_data_foundation/4.16/html/managing_and_allocating_storage_resources/creating-exports-using-nfs_rhodf
+
+### Single Node Openshift or non-ODF clusters
+Single Node and non-ODF installations have the challenge that out of the box, none of the storageClasses support ReadWriteMany persistent volumes.
+For SNO, currently the best option is to create an external NFS server on either another host, or rhel VM on openshift virt if there are enough resources on the node.
+On the exporting host, at least 25GB of space should be available (add the space for the mssql pods should that be deployed)
+```
+sudo echo /srv/mes *(rw,sync,no_root_squash) >> /etc/exports
+sudo exportfs -ra
+```
+
+The other RWX volumes can be deployed to use the same in order to be able to support RWX modes that are required by several of the Critical Manufacturing containers.
+An example can be found by updating the NFS host's address and applying templates/sno-storage.yml:
+``` oc apply -f templates/sno-storage.yml ```
+
+Use the examples/environment-SNO.json.j2 as the environment template.
 
 
 TODO- use output from golden image pipeline to start this VM
-
 ## Setting up the SQL database server
 The MES running in analysis db mode requires a SQL server database.
 Once a connection is available to a Windows host via winrm, the database services and configurations can be applied by running
@@ -136,6 +157,8 @@ and for the web portal:
 The windows server should now be all set and ready for interfacing with the MES services.
 Now let's deploy them.
 
+
+
 ## Create infrastructure and agent: 
 The infrastructure agent for each infrastructure will be the part that maintains the MES application installed within it.
 Only a single agent is allowed per infrastructure, but it can manage multiple environments.
@@ -145,7 +168,6 @@ Fill out the agent section in the values.yml file if you have not already done s
 ```
 ansible-playbook -vvvi inventory.yml playbooks/01-deploy-infrastructure.yml --ask-vault-pass
 ```
-
 
 ## Deploy each environment
 

@@ -10,10 +10,10 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Delete
-  storageClassName: lvms-vg1-immediate
+  storageClassName: ''
   nfs:
-    path: /tmp
-    server: 172.16.11.10
+    path: /srv/mes
+    server: 172.16.11.2
 
 ---
 
@@ -27,10 +27,10 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Delete
-  storageClassName: lvms-vg1-immediate
+  storageClassName: ''
   nfs:
-    path: /tmp
-    server: 172.16.11.10
+    path: /srv/mes
+    server: 172.16.11.2
 ---
 
 apiVersion: v1
@@ -43,10 +43,10 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Delete
-  storageClassName: lvms-vg1-immediate
+  storageClassName: ''
   nfs:
-    path: /tmp
-    server: 172.16.11.10
+    path: /srv/mes
+    server: 172.16.11.2
 
 ---
 
@@ -60,10 +60,10 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Delete
-  storageClassName: lvms-vg1-immediate
+  storageClassName: ''
   nfs:
-    path: /tmp
-    server: 172.16.11.10
+    path: /srv/mes
+    server: 172.16.11.2
 ---
 
 apiVersion: v1
@@ -76,10 +76,10 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Delete
-  storageClassName: lvms-vg1-immediate
+  storageClassName: ''
   nfs:
-    path: /tmp
-    server: 172.16.11.10
+    path: /srv/mes
+    server: 172.16.11.2
 ---
 
 apiVersion: v1
@@ -92,10 +92,10 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Delete
-  storageClassName: lvms-vg1-immediate
+  storageClassName: ''
   nfs:
-    path: /tmp
-    server: 172.16.11.10
+    path: /srv/mes
+    server: 172.16.11.2
 
 ---
 
@@ -109,10 +109,10 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Delete
-  storageClassName: lvms-vg1-immediate
+  storageClassName: ''
   nfs:
-    path: /tmp
-    server: 172.16.11.10
+    path: /srv/mes
+    server: 172.16.11.2
 ---
 
 apiVersion: v1
@@ -125,10 +125,10 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Delete
-  storageClassName: lvms-vg1-immediate
+  storageClassName: ''
   nfs:
-    path: /tmp
-    server: 172.16.11.10
+    path: /srv/mes
+    server: 172.16.11.2
 ---
 
 apiVersion: v1
@@ -141,7 +141,7 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Delete
-  storageClassName: lvms-vg1-immediate
+  storageClassName: ''
   nfs:
-    path: /tmp
-    server: 172.16.11.10
+    path: /srv/mes
+    server: 172.16.11.2

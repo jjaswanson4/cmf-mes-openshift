@@ -567,8 +567,8 @@
       "Value": "{{ admin_password }}",
       "IsEncrypted": false
     },
-    "REPORTING_SSRS_WEB_PORTAL_URL": "{{ cmf_secrets.database.online.address }}/Reports",
-    "REPORTING_SSRS_WEB_SERVICE_URL": "{{ cmf_secrets.database.online.address }}/ReportServer",
+    "REPORTING_SSRS_WEB_PORTAL_URL": "http://{{ cmf_secrets.database.online.address }}/Reports",
+    "REPORTING_SSRS_WEB_SERVICE_URL": "http://{{ cmf_secrets.database.online.address }}/ReportServer",
     "REPORTING_SSRS_USERNAME": "{{ cmf_db_server_name }}\\{{ cmf_secrets.reporting.username }}",
     "REPORTING_SSRS_PASSWORD": {
       "Value": "{{ admin_password }}",
