@@ -53,38 +53,6 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: cm-clickhouse-log-folder
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Delete
-  storageClassName: ''
-  nfs:
-    path: /srv/mes
-    server: 172.16.11.2
----
-
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: cm-redis-data-folder
-spec:
-  capacity:
-    storage: 1Gi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Delete
-  storageClassName: ''
-  nfs:
-    path: /srv/mes
-    server: 172.16.11.2
----
-
-apiVersion: v1
-kind: PersistentVolume
-metadata:
   name: cm-grafana-storage
 spec:
   capacity:

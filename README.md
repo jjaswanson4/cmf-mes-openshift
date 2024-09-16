@@ -127,7 +127,11 @@ On the exporting host, at least 25GB of space should be available (add the space
 ```
 sudo echo /srv/mes *(rw,sync,no_root_squash) >> /etc/exports
 sudo exportfs -ra
+sudo chmod 777 /srv/mes
 ```
+Not the most secure thing to do, but there are some issues with the user presented from Windows and mapping those permissions to the correct user within RHEL.
+If this is a problem, ensure that the directory is accessible by user with Gid and Uid 1001.
+Setup the Windows 
 
 The other RWX volumes can be deployed to use the same in order to be able to support RWX modes that are required by several of the Critical Manufacturing containers.
 An example can be found by updating the NFS host's address and applying templates/sno-storage.yml:

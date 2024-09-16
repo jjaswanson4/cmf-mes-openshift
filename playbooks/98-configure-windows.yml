@@ -112,7 +112,43 @@
 
     - name: Configure SSRS
       ansible.windows.win_command:
-        cmd: '"C:\Program Files\Microsoft SQL Server Reporting Services\Shared Tools\RSConfig.exe" -c  -s "{{ cmf_db_server_name }}" -i SSRS -d ONLINE -a Windows -u "{{ cmf_db_server_name }}\{{ db_username }}" -p "{{ admin_password }}" -t'
+        cmd: '"C:\Program Files\Microsoft SQL Server Reporting Services\Shared Tools\RSConfig.exe" -c  -s "{{ cmf_db_server_name }}" -i SSRS -d ReportServer -a SQL -u "sa" -p "{{ admin_password }}" -t'
+
+    - name: Enable windows basic auth for report server
+      community.windows.win_xml:
+        path: 'C:\Program Files\Microsoft SQL Server Reporting Services\SSRS\ReportServer\rsreportserver.config'
+        xpath: //Configuration/Authentication/AuthenticationTypes
+        fragment: <RSWindowsBasic />
+
+    - name: Setup WebServerWebServices
+      community.windows.win_xml:
+        path: 'C:\Program Files\Microsoft SQL Server Reporting Services\SSRS\ReportServer\rsreportserver.config'
+        xpath: //Configuration/URLReservations/Application[Name="ReportServerWebService"]
+        fragment: |
+              <URLs>
+                <URL>
+                  <UrlString>http://+:80</UrlString>
+                  <AccountSid>S-1-5-80-4050220999-2730734961-1537482082-519850261-379003301</AccountSid>
+                  <AccountName>NT SERVICE\SQLServerReportingServices</AccountName>
+                </URL>
+              </URLs>
+    - name: Setup WebServerWebServices  
+      community.windows.win_xml:
+        path: 'C:\Program Files\Microsoft SQL Server Reporting Services\SSRS\ReportServer\rsreportserver.config'
+        xpath: //Configuration/URLReservations/Application[Name="ReportServerWebApp"]
+        fragment: |
+              <URLs>
+                <URL>
+                  <UrlString>http://+:80</UrlString>
+                  <AccountSid>S-1-5-80-4050220999-2730734961-1537482082-519850261-379003301</AccountSid>
+                  <AccountName>NT SERVICE\SQLServerReportingServices</AccountName>
+                </URL>
+              </URLs>
+
+    - name: Restart SSRS service
+      ansible.windows.win_service:
+        name: "SQL Server Reporting Services"
+        state: restarted
 
     #   register: sql_server_install_result
     #   failed_when: sql_server_install_result.rc != 0
