@@ -15,6 +15,13 @@
     #     name: '@criticalmanufacturing/portal'
     #     global: true
 
+    - name: Create dir for CMF sdk
+      ansible.builtin.file:
+        path: "~/Cmf.CustomerPortal.Sdk.Console-1.14.10.linux-x64/"
+        state: directory
+        mode: '0755'
+      register: _outputDir
+
     - name: download and extract zip file to home directory
       # Content suggestion provided by Ansible Lightspeed
       ansible.builtin.unarchive:
