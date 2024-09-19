@@ -86,7 +86,7 @@ spec:
               name: 'tablet'
               type: 'tablet'
           interfaces:
-            - macAddress: "{{ '02:9e:19' | community.general.random_mac }}" 
+            - macAddress: "{{ lookup('password', '/dev/null chars=hexdigits length=12') | ansible.utils.hwaddr('unix') }}"
               masquerade: {}
               model: 'e1000e'
               name: 'default'
