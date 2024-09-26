@@ -3,3 +3,17 @@ version: 3
 dependencies:
   galaxy: requirements.yml
   python: requirements.txt
+
+additional_build_steps:
+  prepend_final:
+    - RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+    - RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+    - RUN dnf -y update && dnf -y install unzip
+  append_final:
+    - ADD "https://github.com/criticalmanufacturing/portal-sdk/releases/download/1.14.10/Cmf.CustomerPortal.Sdk.Console-1.14.10.linux-x64.zip" "/tmp/cmf-sdk.zip"
+    - RUN mkdir /tmp/cmf-sdk/
+    - RUN unzip /tmp/cmf-sdk.zip -d /tmp/cmf-sdk/
+    - RUN echo "$(whereis unzip)"
+  append_base:
+    - RUN echo This is a post-install command!
+    - RUN ls -la /etc

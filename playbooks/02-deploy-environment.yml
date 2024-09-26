@@ -24,7 +24,7 @@
 
     - name: Create environment Deployment
       ansible.builtin.command: |
-          ~/Cmf.CustomerPortal.Sdk.Console-1.14.10.linux-x64/cmf-portal deploy --name='{{ cmf.environment.name }}' \
+          {{ cmf_sdk_path }}/cmf-portal deploy --name='{{ cmf.environment.name }}' \
           -trg='{{ cmf.environment.target }}' \
           --deploymentTimeoutMinutes={{ cmf.environment.deploymentTimeout}} \
           --description='{{ cmf.environment.description }}' \
@@ -39,7 +39,7 @@
 
     - name: Create environmet Deployment and terminate any existing deployments
       ansible.builtin.command: |
-          ~/Cmf.CustomerPortal.Sdk.Console-1.14.10.linux-x64/cmf-portal deploy --name='{{ cmf.environment.name }}' \
+          {{ cmf_sdk_path }}/cmf-portal deploy --name='{{ cmf.environment.name }}' \
           -trg={{ cmf.environment.target }} \
           --deploymentTimeoutMinutes={{ cmf.environment.deploymentTimeout}} \
           --description='{{ cmf.environment.description }}' \

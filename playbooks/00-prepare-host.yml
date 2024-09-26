@@ -17,7 +17,7 @@
 
     - name: Create dir for CMF sdk
       ansible.builtin.file:
-        path: "~/Cmf.CustomerPortal.Sdk.Console-1.14.10.linux-x64/"
+        path: "{{ cmf_sdk_path }}"
         state: directory
         mode: '0755'
       register: _outputDir
@@ -26,5 +26,5 @@
       # Content suggestion provided by Ansible Lightspeed
       ansible.builtin.unarchive:
         src: "https://github.com/criticalmanufacturing/portal-sdk/releases/download/1.14.10/Cmf.CustomerPortal.Sdk.Console-1.14.10.linux-x64.zip"
-        dest: ~/Cmf.CustomerPortal.Sdk.Console-1.14.10.linux-x64/
+        dest: "{{ cmf_sdk_path }}"
         remote_src: true

@@ -9,6 +9,7 @@ openshift:
 cmf_infrastructure: cmf-ansible-infrastructure  #Change according to the infrastructure to define on the DevOpsPortal from CMF
 cmf_db_server_name: "cmf-db-win2k19"
 cmf_installation_data_pv: installation-data #if using a precreated pv, this is important!
+cmf_sdk_path: "~/cmf-sdk" #This is where the SDK will be extracted to
 cmf:
   customer: "The-customer-linked-to-the-cmf-license"
   agent:
